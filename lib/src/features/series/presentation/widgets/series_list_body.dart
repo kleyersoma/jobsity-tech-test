@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_bloc.dart';
-import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_state.dart';
+import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_list/series_list_bloc.dart';
+import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_list/series_list_state.dart';
 import 'package:flutter_tech_assignment/src/features/series/presentation/widgets/bottom_loader.dart';
 import 'package:flutter_tech_assignment/src/features/series/presentation/widgets/series_tile.dart';
 
@@ -16,16 +16,16 @@ class _SeriesListBodyState extends State<SeriesListBody> {
   @override
   void initState() {
     super.initState();
-    context.read<SeriesBloc>().scrollController.addListener(
-          () => context.read<SeriesBloc>().onScroll(context),
+    context.read<SeriesListBloc>().scrollController.addListener(
+          () => context.read<SeriesListBloc>().onScroll(context),
         );
   }
 
   @override
   void dispose() {
-    context.read<SeriesBloc>().scrollController
+    context.read<SeriesListBloc>().scrollController
       ..removeListener(
-        () => context.read<SeriesBloc>().onScroll(context),
+        () => context.read<SeriesListBloc>().onScroll(context),
       )
       ..dispose();
     super.dispose();
@@ -33,13 +33,14 @@ class _SeriesListBodyState extends State<SeriesListBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SeriesBloc, SeriesState>(builder: (context, state) {
+    return BlocBuilder<SeriesListBloc, SeriesListState>(
+        builder: (context, state) {
       switch (state.status) {
-        case SeriesStatus.initial:
+        case SeriesListStatus.initial:
           return const Center(
             child: CircularProgressIndicator.adaptive(),
           );
-        case SeriesStatus.success:
+        case SeriesListStatus.success:
           if (state.seriesList.isEmpty) {
             return const Center(
               child: Text('No series to display'),
@@ -54,9 +55,9 @@ class _SeriesListBodyState extends State<SeriesListBody> {
             itemCount: state.hasReachedMax
                 ? state.seriesList.length
                 : state.seriesList.length + 1,
-            controller: context.read<SeriesBloc>().scrollController,
+            controller: context.read<SeriesListBloc>().scrollController,
           );
-        case SeriesStatus.failure:
+        case SeriesListStatus.failure:
           return const Center(
             child: Text('Failed to fetch series'),
           );

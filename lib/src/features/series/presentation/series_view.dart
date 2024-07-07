@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tech_assignment/src/features/series/domain/entities/serie.dart';
-import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_bloc.dart';
-import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_event.dart';
-import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_state.dart';
+import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series/series_bloc.dart';
+import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series/series_event.dart';
+import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series/series_state.dart';
 import 'package:flutter_tech_assignment/src/features/series/presentation/widgets/episodes_list.dart';
 import 'package:gap/gap.dart';
 
@@ -59,24 +59,23 @@ class SeriesView extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
               const Gap(12),
-              BlocProvider(
-                  create: (context) =>
-                      SeriesBloc()..add(SeriesEpisodesFetched(series: series)),
-                  child: BlocBuilder<SeriesBloc, SeriesState>(
-                      builder: (context, state) {
+              BlocBuilder<SeriesBloc, SeriesState>(
+                  bloc: SeriesBloc(series: series)
+                    ..add(SeriesEpisodesFetched()),
+                  builder: (context, state) {
                     switch (state.status) {
-                      case SeriesStatus.initial:
+                      case SeriesStatus.loading:
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
+                      case SeriesStatus.success:
+                        return EpisodesList(episodes: series.episodes);
                       case SeriesStatus.failure:
                         return const Center(
                           child: Text('Failed to fetch series information!'),
                         );
-                      case SeriesStatus.success:
-                        return EpisodesList(episodes: series.episodes);
                     }
-                  }))
+                  })
             ])));
   }
 }

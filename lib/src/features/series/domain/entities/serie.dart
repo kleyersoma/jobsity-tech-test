@@ -8,7 +8,7 @@ class Series {
   final String? time;
   final List<String>? days;
   final String? summary;
-  late Map<int, List<Episode>>? episodes;
+  Map<int, List<Episode>>? episodes;
 
   Series({
     required this.id,

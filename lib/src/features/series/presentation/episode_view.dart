@@ -11,7 +11,7 @@ class EpisodeView extends StatelessWidget {
     final episode = ModalRoute.of(context)?.settings.arguments as Episode;
     return Scaffold(
         appBar: AppBar(
-          title: Text(episode.name),
+          title: Text('Season ${episode.season}: Episode ${episode.number}'),
         ),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
@@ -32,7 +32,12 @@ class EpisodeView extends StatelessWidget {
                       ),
               ),
               const Gap(12),
-              Align(child: Text('S${episode.season}:${episode.number}')),
+              Align(
+                  child: Text(
+                episode.name,
+                style: const TextStyle(fontSize: 16),
+                maxLines: 2,
+              )),
               const Gap(12),
               Text(episode.summary != null
                   ? '${episode.summary}'
