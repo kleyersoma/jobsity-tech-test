@@ -3,35 +3,42 @@ import 'package:flutter_tech_assignment/src/features/series/domain/entities/seri
 
 enum SeriesStatus { initial, success, failure }
 
+// ignore: must_be_immutable
 final class SeriesState extends Equatable {
   final SeriesStatus status;
-  final List<Series> series;
+  final List<Series> seriesList;
   final bool hasReachedMax;
   final int pageIndex;
+  late Series? series;
 
-  const SeriesState(
-      {this.status = SeriesStatus.initial,
-      this.series = const <Series>[],
-      this.hasReachedMax = false,
-      this.pageIndex = 1});
+  SeriesState({
+    this.status = SeriesStatus.initial,
+    this.seriesList = const <Series>[],
+    this.hasReachedMax = false,
+    this.pageIndex = 0,
+    this.series,
+  });
 
   SeriesState copyWith({
     SeriesStatus? status,
-    List<Series>? series,
+    List<Series>? seriesList,
     bool? hasReachedMax,
     int? pageIndex,
+    Series? series,
   }) =>
       SeriesState(
           status: status ?? this.status,
-          series: series ?? this.series,
+          seriesList: seriesList ?? this.seriesList,
           hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-          pageIndex: pageIndex ?? this.pageIndex);
+          pageIndex: pageIndex ?? this.pageIndex,
+          series: series ?? this.series);
 
   @override
   String toString() {
-    return '''SeriesState {status: $status, series: ${series.length}}, hasReachedMax: $hasReachedMax, pageIndex: $pageIndex''';
+    return '''SeriesState {status: $status, seriesList: ${seriesList.length}}, hasReachedMax: $hasReachedMax, pageIndex: $pageIndex, series: ${series.toString()}''';
   }
 
   @override
-  List<Object?> get props => [status, series, hasReachedMax, pageIndex];
+  List<Object?> get props =>
+      [status, seriesList, hasReachedMax, pageIndex, series];
 }

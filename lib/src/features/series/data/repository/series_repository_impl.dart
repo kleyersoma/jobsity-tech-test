@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_tech_assignment/src/features/series/data/dtos/episode_dto.dart';
 import 'package:flutter_tech_assignment/src/features/series/data/dtos/serie_dto.dart';
 import 'package:flutter_tech_assignment/src/features/series/domain/entities/episodes.dart';
 import 'package:flutter_tech_assignment/src/features/series/domain/entities/serie.dart';
@@ -30,9 +31,21 @@ class SeriesRepositoryImpl implements SeriesRepository {
   }
 
   @override
-  Future<List<Episode>> listAllSeriesEpisodes({required int id}) {
-    // TODO: implement listAllSeriesEpisodes
-    throw UnimplementedError();
+  Future<Map<int, List<Episode>>> listSeriesEpisodes(
+      {required int showId}) async {
+    try {
+      final response = await http
+          .get(Uri.parse(TVMazeAPIEndPoints.showEpisodesList(showId: showId)));
+
+      if (response.statusCode == HttpStatus.ok) {
+        return compute(_parseSeriesEpisodes, response.body);
+      } else {
+        throw Exception('Failed to get series list from TV Maze API');
+      }
+    } catch (e) {
+      log(e.toString(), error: e);
+      throw Exception('Error fetching series: $e');
+    }
   }
 
   @override
@@ -47,5 +60,26 @@ class SeriesRepositoryImpl implements SeriesRepository {
     List<Series> seriesList =
         jsonParsed.map<Series>((json) => SerieDTO.fromJson(json)).toList();
     return seriesList;
+  }
+
+  Map<int, List<Episode>> _parseSeriesEpisodes(String responseBody) {
+    final jsonParsed =
+        (jsonDecode(responseBody) as List).cast<Map<String, dynamic>>();
+    final episodeList =
+        jsonParsed.map<Episode>((json) => EpisodeDTO.fromJson(json)).toList();
+    final seriesEpisodes = <int, List<Episode>>{};
+
+    for (var element in episodeList) {
+        seriesEpisodes.update(
+          element.season,
+          (episodesList) {
+            episodesList.add(element);
+            return episodesList;
+          },
+          ifAbsent: () => <Episode>[element],
+        );
+      }
+
+    return seriesEpisodes;
   }
 }

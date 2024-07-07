@@ -6,7 +6,7 @@ class EpisodeDTO extends Episode {
       required super.name,
       required super.season,
       required super.number,
-      required super.summary,
+      super.summary,
       super.image});
 
   factory EpisodeDTO.fromJson(Map<String, dynamic> json) {
@@ -15,8 +15,8 @@ class EpisodeDTO extends Episode {
       name: json['name'],
       season: json['season'],
       number: json['number'],
-      image: json['image']['medium'],
-      summary: json['summary'],
+      image: json['image'] != null ? json['image']['medium'] : null,
+      summary: json['summary'] as String?,
     );
   }
 }

@@ -3,7 +3,7 @@ class Episode {
   final String name;
   final int season;
   final int number;
-  final String summary;
+  final String? summary;
   late String? image;
 
   Episode(
@@ -11,6 +11,6 @@ class Episode {
       required this.name,
       required this.season,
       required this.number,
-      required this.summary,
+      this.summary,
       this.image});
 }

@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_tech_assignment/src/features/series/domain/entities/episodes.dart';
 
-class Series with ChangeNotifier {
+class Series {
   final int id;
   final String name;
   final String? image;
@@ -21,9 +20,4 @@ class Series with ChangeNotifier {
     this.image,
     this.episodes,
   });
-
-  void updateEpisodes({required Map<int, List<Episode>> e}) {
-    episodes = e;
-    notifyListeners();
-  }
 }

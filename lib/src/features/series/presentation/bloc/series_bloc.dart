@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tech_assignment/src/features/series/domain/use_cases/list_all_series.dart';
+import 'package:flutter_tech_assignment/src/features/series/domain/use_cases/list_series_episodes.dart';
 import 'package:flutter_tech_assignment/src/utils/transformers/throttle_droppable.dart';
 import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_event.dart';
 import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_state.dart';
@@ -8,9 +11,10 @@ import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/se
 class SeriesBloc extends Bloc<SeriesEvent, SeriesState> {
   ScrollController scrollController = ScrollController();
 
-  SeriesBloc() : super(const SeriesState()) {
+  SeriesBloc() : super(SeriesState()) {
     on<SeriesFetched>(_onSeriesFetched,
         transformer: throttleDroppable(throttleDuration));
+    on<SeriesEpisodesFetched>(_onSeriesEpisodesFetched);
   }
 
   Future<void> _onSeriesFetched(
@@ -22,7 +26,7 @@ class SeriesBloc extends Bloc<SeriesEvent, SeriesState> {
             await ListAllSeries().execute(pageIndex: state.pageIndex);
         return emit(state.copyWith(
             status: SeriesStatus.success,
-            series: series,
+            seriesList: series,
             hasReachedMax: false,
             pageIndex: (state.pageIndex) + 1));
       }
@@ -31,9 +35,25 @@ class SeriesBloc extends Bloc<SeriesEvent, SeriesState> {
           ? emit(state.copyWith(hasReachedMax: true))
           : emit(state.copyWith(
               status: SeriesStatus.success,
-              series: List.of(state.series)..addAll(series),
+              seriesList: List.of(state.seriesList)..addAll(series),
               hasReachedMax: false,
               pageIndex: (state.pageIndex) + 1));
+    } catch (e) {
+      emit(state.copyWith(status: SeriesStatus.failure));
+    }
+  }
+
+  Future<void> _onSeriesEpisodesFetched(
+      SeriesEpisodesFetched event, Emitter<SeriesState> emit) async {
+    try {
+      if (state.status == SeriesStatus.initial) {
+        state.series = event.series;
+        final seriesEpisodes =
+            await ListSeriesEpisodes().execute(showId: state.series!.id);
+        state.series!.episodes = seriesEpisodes;
+        return emit(
+            state.copyWith(status: SeriesStatus.success, series: state.series));
+      }
     } catch (e) {
       emit(state.copyWith(status: SeriesStatus.failure));
     }

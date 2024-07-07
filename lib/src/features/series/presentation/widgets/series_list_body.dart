@@ -13,7 +13,6 @@ class SeriesListBody extends StatefulWidget {
 }
 
 class _SeriesListBodyState extends State<SeriesListBody> {
-
   @override
   void initState() {
     super.initState();
@@ -41,25 +40,25 @@ class _SeriesListBodyState extends State<SeriesListBody> {
             child: CircularProgressIndicator.adaptive(),
           );
         case SeriesStatus.success:
-          if (state.series.isEmpty) {
+          if (state.seriesList.isEmpty) {
             return const Center(
               child: Text('No series to display'),
             );
           }
           return ListView.builder(
             itemBuilder: (context, index) {
-              return index >= state.series.length
+              return index >= state.seriesList.length
                   ? const BottomLoader()
-                  : SeriesTile(series: state.series.elementAt(index));
+                  : SeriesTile(series: state.seriesList.elementAt(index));
             },
             itemCount: state.hasReachedMax
-                ? state.series.length
-                : state.series.length + 1,
+                ? state.seriesList.length
+                : state.seriesList.length + 1,
             controller: context.read<SeriesBloc>().scrollController,
           );
         case SeriesStatus.failure:
           return const Center(
-            child: Text('Failed to fetch posts'),
+            child: Text('Failed to fetch series'),
           );
       }
     });
