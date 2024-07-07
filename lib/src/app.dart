@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tech_assignment/src/routing/router.dart';
+import 'package:flutter_tech_assignment/src/routing/app_router.dart';
 
 class TVMazeApp extends StatelessWidget {
   const TVMazeApp({

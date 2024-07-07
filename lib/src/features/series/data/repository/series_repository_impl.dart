@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_tech_assignment/src/features/series/data/dtos/serie_dto.dart';
 import 'package:flutter_tech_assignment/src/features/series/domain/entities/episodes.dart';
 import 'package:flutter_tech_assignment/src/features/series/domain/entities/serie.dart';
@@ -16,13 +17,10 @@ class SeriesRepositoryImpl implements SeriesRepository {
     try {
       final response = await http
           .get(Uri.parse(TVMazeAPIEndPoints.showIndex(pageIndex: pageIndex)));
+
       if (response.statusCode == HttpStatus.ok) {
-        List<dynamic> jsonList = jsonDecode(response.body);
-        List<Series> seriesList =
-            jsonList.map((json) => SerieDTO.fromJson(json)).toList();
-        return seriesList;
-      } 
-      else {
+        return compute(_parseSeries, response.body);
+      } else {
         throw Exception('Failed to get series list from TV Maze API');
       }
     } catch (e) {
@@ -41,5 +39,13 @@ class SeriesRepositoryImpl implements SeriesRepository {
   Future<Series> seriesInformation({required int id}) {
     // TODO: implement seriesInformation
     throw UnimplementedError();
+  }
+
+  List<Series> _parseSeries(String responseBody) {
+    final jsonParsed =
+        (jsonDecode(responseBody) as List).cast<Map<String, dynamic>>();
+    List<Series> seriesList =
+        jsonParsed.map<Series>((json) => SerieDTO.fromJson(json)).toList();
+    return seriesList;
   }
 }

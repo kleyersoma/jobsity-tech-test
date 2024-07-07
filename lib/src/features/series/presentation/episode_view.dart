@@ -3,7 +3,7 @@ import 'package:flutter_tech_assignment/src/features/series/domain/entities/epis
 
 class EpisodeView extends StatelessWidget {
   const EpisodeView({super.key});
-
+  static const String routeName = '/episode-view';
   @override
   Widget build(BuildContext context) {
     final episode = ModalRoute.of(context)?.settings.arguments as Episode;

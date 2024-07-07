@@ -1,16 +1,17 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tech_assignment/src/features/series/domain/use_cases/list_all_series.dart';
 import 'package:flutter_tech_assignment/src/utils/transformers/throttle_droppable.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_event.dart';
 import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series_state.dart';
 
 class SeriesBloc extends Bloc<SeriesEvent, SeriesState> {
-  SeriesBloc({required this.httpClient}) : super(const SeriesState()) {
+  ScrollController scrollController = ScrollController();
+
+  SeriesBloc() : super(const SeriesState()) {
     on<SeriesFetched>(_onSeriesFetched,
         transformer: throttleDroppable(throttleDuration));
   }
-  final http.Client httpClient;
 
   Future<void> _onSeriesFetched(
       SeriesFetched event, Emitter<SeriesState> emit) async {
@@ -36,5 +37,16 @@ class SeriesBloc extends Bloc<SeriesEvent, SeriesState> {
     } catch (e) {
       emit(state.copyWith(status: SeriesStatus.failure));
     }
+  }
+
+  void onScroll(BuildContext context) {
+    if (_isBottom) context.read<SeriesBloc>().add(SeriesFetched());
+  }
+
+  bool get _isBottom {
+    if (!scrollController.hasClients) return false;
+    final maxScroll = scrollController.position.maxScrollExtent;
+    final currentScroll = scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
   }
 }
