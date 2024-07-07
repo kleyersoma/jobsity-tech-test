@@ -8,7 +8,7 @@ import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/se
 class SeriesListView extends StatelessWidget {
   const SeriesListView({super.key});
 
-  static const String routeName = '/series';
+  static const String routeName = '/series-index';
 
   @override
   Widget build(BuildContext context) {

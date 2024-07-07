@@ -5,6 +5,7 @@ import 'package:flutter_tech_assignment/src/features/series/domain/entities/seri
 import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series/series_bloc.dart';
 import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series/series_event.dart';
 import 'package:flutter_tech_assignment/src/features/series/presentation/bloc/series/series_state.dart';
+import 'package:flutter_tech_assignment/src/features/series/presentation/widgets/bottom_loader.dart';
 import 'package:flutter_tech_assignment/src/features/series/presentation/widgets/episodes_list.dart';
 import 'package:gap/gap.dart';
 
@@ -65,9 +66,7 @@ class SeriesView extends StatelessWidget {
                   builder: (context, state) {
                     switch (state.status) {
                       case SeriesStatus.loading:
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const BottomLoader();
                       case SeriesStatus.success:
                         return EpisodesList(episodes: series.episodes);
                       case SeriesStatus.failure:
