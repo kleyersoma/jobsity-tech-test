@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tech_assignment/src/features/series/domain/entities/episodes.dart';
@@ -33,7 +32,7 @@ class EpisodeView extends StatelessWidget {
                       ),
               ),
               const Gap(12),
-              Text('S${episode.season}:${episode.number}'),
+              Align(child: Text('S${episode.season}:${episode.number}')),
               const Gap(12),
               Text(episode.summary != null
                   ? '${episode.summary}'
