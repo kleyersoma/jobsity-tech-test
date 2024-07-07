@@ -4,7 +4,7 @@ class Episode {
   final int season;
   final int number;
   final String? summary;
-  late String? image;
+  final String? image;
 
   Episode(
       {required this.id,
