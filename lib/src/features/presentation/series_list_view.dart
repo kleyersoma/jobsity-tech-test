@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tech_assignment/src/features/presentation/bloc/series_list/series_list_event.dart';
 import 'package:flutter_tech_assignment/src/features/presentation/widgets/series_list_body.dart';
 
-import 'package:flutter_tech_assignment/src/features/presentation/bloc/series_list/series_list_bloc.dart';
+import 'package:flutter_tech_assignment/src/features/presentation/widgets/series_search_action_button.dart';
 
 class SeriesListView extends StatelessWidget {
   const SeriesListView({super.key});
@@ -15,10 +13,10 @@ class SeriesListView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text('TV Maze API Series'),
+          actions: const [
+            SeriesSearchActionButton(),
+          ],
         ),
-        body: BlocProvider(
-          create: (context) => SeriesListBloc()..add(SeriesListFetched()),
-          child: const SeriesListBody(),
-        ));
+        body: const SeriesListBody());
   }
 }
