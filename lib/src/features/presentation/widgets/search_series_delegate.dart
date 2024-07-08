@@ -72,12 +72,12 @@ class SearchSeriesDelegate extends SearchDelegate<Series?> {
                             ),
                       title: Text(searchResultItem.name),
                       onTap: () {
-                        state.searchResultsItems.clear();
                         close(
                             context, state.searchResultsItems.elementAt(index));
                         Navigator.pushNamed(context, SeriesView.routeName,
                             arguments: searchResultItem);
                         query = '';
+                        state.searchResultsItems.clear();
                       });
                 },
               )
