@@ -4,6 +4,11 @@ sealed class SearchEvent extends Equatable {
   const SearchEvent();
 }
 
+final class SearchLeave extends SearchEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 final class SearchTextChanged extends SearchEvent {
   const SearchTextChanged({required this.text});
 

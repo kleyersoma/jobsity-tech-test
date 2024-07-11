@@ -17,7 +17,6 @@ final class SearchStateSuccess extends SearchState {
   const SearchStateSuccess(this.searchResultsItems);
 
   final List<SearchResultItem> searchResultsItems;
-
   @override
   List<Object> get props => [searchResultsItems];
 

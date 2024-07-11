@@ -17,7 +17,7 @@ class SearchSeriesDelegate extends SearchDelegate<Series?> {
     return [
       IconButton(
         onPressed: () {
-          query = '';
+          _clearSearchResults();
         },
         icon: AnimatedIcon(
             icon: AnimatedIcons.menu_close, progress: transitionAnimation),
@@ -32,7 +32,7 @@ class SearchSeriesDelegate extends SearchDelegate<Series?> {
         Icons.arrow_back,
       ),
       onPressed: () {
-        query = '';
+        _clearSearchResults();
         close(context, null);
       },
     );
@@ -41,17 +41,22 @@ class SearchSeriesDelegate extends SearchDelegate<Series?> {
   @override
   Widget buildResults(BuildContext context) {
     searchBloc.add(SearchTextChanged(text: query));
-
     return BlocBuilder<SearchBloc, SearchState>(builder: (context, state) {
       return switch (state) {
-        SearchStateEmpty() => const Align(
+        SearchStateEmpty() => Container(
             alignment: Alignment.topCenter,
-            child: Text('Please enter a term to begin')),
+            padding: const EdgeInsets.only(top: 24),
+            child: Text(query.isEmpty
+                ? 'Please enter a term to begin'
+                : 'Fetching results..')),
         SearchStateLoading() =>
           const Center(child: CircularProgressIndicator.adaptive()),
         SearchStateError() => Center(child: Text(state.error)),
         SearchStateSuccess() => state.searchResultsItems.isEmpty
-            ? const Text('No Results')
+            ? Container(
+                padding: const EdgeInsets.only(top: 24),
+                alignment: Alignment.topCenter,
+                child: const Text('No Results'))
             : ListView.builder(
                 itemCount: state.searchResultsItems.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -72,12 +77,11 @@ class SearchSeriesDelegate extends SearchDelegate<Series?> {
                             ),
                       title: Text(searchResultItem.name),
                       onTap: () {
-                        close(
-                            context, state.searchResultsItems.elementAt(index));
+                        _clearSearchResults();
+
+                        close(context, searchResultItem);
                         Navigator.pushNamed(context, SeriesView.routeName,
                             arguments: searchResultItem);
-                        query = '';
-                        state.searchResultsItems.clear();
                       });
                 },
               )
@@ -87,6 +91,15 @@ class SearchSeriesDelegate extends SearchDelegate<Series?> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return const SizedBox.shrink();
+    return Container(
+      alignment: Alignment.topCenter,
+      padding: const EdgeInsets.only(top: 12),
+      child: const Text('Enter a movie or series name'),
+    );
+  }
+
+  Future<void> _clearSearchResults() async {
+    query = '';
+    searchBloc.add(SearchLeave());
   }
 }
