@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter_tech_assignment/src/features/domain/use_cases/series_search.dart';
 import 'package:flutter_tech_assignment/src/features/presentation/bloc/search/search_event.dart';
